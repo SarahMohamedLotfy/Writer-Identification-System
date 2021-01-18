@@ -54,7 +54,7 @@ for i in range(0,len(keyslist),3):
         image_name2 = newDict[keyslist[i+j-1]][1] + '.png'
         copy2(os.path.join(images_path,image_name1), os.path.join(newpath,'1.png'))
         copy2(os.path.join(images_path,image_name2), os.path.join(newpath,'2.png'))
-    test_image = newDict[keyslist[i]][0] + '.png'
+    test_image = newDict[keyslist[i]][2] + '.png'
     copy2(os.path.join(images_path,test_image),os.path.join(full_path,'test.png'))
 
 # file_writer = open(path+"\\writers.txt","w")
