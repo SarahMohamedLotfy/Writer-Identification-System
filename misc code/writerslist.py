@@ -1,7 +1,7 @@
 
 import os
 from shutil import copy2
-
+from random import randrange
 
 path = 'D:\\pattern dataset\\xml'
 test_cases_path = 'D:\\pattern dataset\\IAMdataset'
@@ -36,9 +36,11 @@ for idnum,name in writer_ids:
         filename_map[idnum] = [name]
 
 newDict = dict(filter(lambda elem: len(elem[1]) >= 3,filename_map.items()))
-
 keyslist = list(newDict.keys())
 final_itr = len(keyslist)//3 
+
+answerlist = []
+
 for i in range(0,len(keyslist),3):
     if (i+1 == final_itr):
         break
@@ -54,11 +56,18 @@ for i in range(0,len(keyslist),3):
         image_name2 = newDict[keyslist[i+j-1]][1] + '.png'
         copy2(os.path.join(images_path,image_name1), os.path.join(newpath,'1.png'))
         copy2(os.path.join(images_path,image_name2), os.path.join(newpath,'2.png'))
-    test_image = newDict[keyslist[i]][2] + '.png'
+    
+    rng = randrange(0,3)
+    answerlist.append(rng+1)
+    test_image = newDict[keyslist[i+rng]][2] + '.png'
     copy2(os.path.join(images_path,test_image),os.path.join(full_path,'test.png'))
+
 
 # file_writer = open(path+"\\writers.txt","w")
 # for item in writer_ids:
 #         file_writer.write(item[0] + " " + item[1] + "\n")
-    
-    
+ 
+file_writer = open(os.path.join(test_cases_path,'asnwers.txt'),'w')
+for item in answerlist:
+    file_writer.write(str(item) + '\n')
+file_writer.close()
