@@ -9,5 +9,26 @@ The pilpline of our system is that we take the image then pass it to preprocessi
 
 We tested this code on 40 test cases and we got 90% accuracy.
 
+
+Libraries needed:
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import ndimage
+from scipy.ndimage import label
+import os
+import statistics
+from sklearn.neighbors import KNeighborsClassifier
+import time
+
+
+How to run the code:
+  - It is a python code in pattern.py file.
+  - Edit the code with any code editor to change the path to the data folder.
+  - Run using python.
+  - results.txt ad time.txt will be generated at the data folder.
+
+
+
 reference:
 U. Marti and H. Bunke. The IAM-database: An English Sentence Database for Off-line Handwriting Recognition. Int'l Journal on Document Analysis and Recognition, Volume 5, pages 39 - 46, 2002.
