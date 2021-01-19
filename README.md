@@ -29,6 +29,7 @@ How to run the code:
   - results.txt ad time.txt will be generated at the data folder.
 
 
+- Link of 40 test cases:  https://drive.google.com/file/d/1ay27biVIsuU9kb7ZstaLQDBzfqbS6Nbn/view?usp=sharing
 
 reference:
 U. Marti and H. Bunke. The IAM-database: An English Sentence Database for Off-line Handwriting Recognition. Int'l Journal on Document Analysis and Recognition, Volume 5, pages 39 - 46, 2002.
