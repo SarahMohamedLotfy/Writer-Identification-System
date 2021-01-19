@@ -201,4 +201,4 @@ results_writer.close()
 times_writer = open(os.path.join(path,'time.txt'),'w')
 for i in range(len(test_times)):
     times_writer.write(str(test_times[i])+ '\n')
-results_writer.close()
+times_writer.close()
