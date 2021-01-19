@@ -8,10 +8,6 @@ import statistics
 from sklearn.neighbors import KNeighborsClassifier
 import time
 
-#change this
-path = 'D:\\GitHub\\Writer-Identification-System\\IAMdataset'
-
-
 def crop_handwritten_region(imgpath):
     
     img = cv2.imread(imgpath)
@@ -102,7 +98,6 @@ def split_lines(img):
                 lines.append(img[up:down, :])
         i += 1
     return lines
-
 # change this later to be R = 3 instead of R = 1
 def lbp_calculate_pixels(img, x, y):
     threshold = img[x, y]
@@ -143,26 +138,23 @@ def lbp_normalize(lbp_hist):
     lbp_mean = statistics.mean(lbp_hist)
     lbp_hist = lbp_hist / lbp_mean
     return lbp_hist
-
-
-
+path = 'E:\\Writer-Identification-System\\IAMdataset'
 directory = os.listdir(path)
+
 test_results = [] # holder for results to write after finishing
 test_times = [] # holder for test times to write after finishing
 
 for folder in directory:
-    
     training_features = []
     labels = []
     test_features = []
+    if '.txt' in (path + '\\' +folder + '\\'):
+            continue
     for file in range(1,4):
-        if '.txt' in (path + '\\' +folder + '\\' + str(file)): #to igrone txt files
-            break
         for img in range(1,3):
 #             print(path + '\\' +folder + '\\' + str(file) + '\\' + str(img) +'.png')    
 #             print(file)
 #             labels.append(file)
-            
             cropped_imgbin,cropped_imggray, cropped_img_more = crop_handwritten_region(path + '\\' +folder + '\\' + str(file) + '\\' + str(img) +'.png')
             for i in split_lines(cropped_imgbin):
                 lbp_img = lbp_get_result(i)
@@ -175,7 +167,7 @@ for folder in directory:
     
 #     print(path + '\\' +folder + '\\test.png')
     cropped_imgbin,cropped_imggray, cropped_img_more = crop_handwritten_region(path + '\\' +folder + '\\test.png')
-    start_time = time.time()        
+    start_time = time.time()   
     for i in split_lines(cropped_imgbin):
 #         pred = []
         lbp_img = lbp_get_result(i)
@@ -192,13 +184,14 @@ for folder in directory:
     writer_prediction = classifier.predict(test_features)
     end_time = time.time()
     run_time = end_time - start_time
+    test_times.append(run_time)
     x = np.array(writer_prediction) 
 #     print("Most frequent value in the above array:") 
     print(np.bincount(x).argmax())
+    test_results.append(np.bincount(x).argmax())
 #     print("knn",writer_prediction)
 
-
-
+## output writing in files
 results_writer = open(os.path.join(path,'results.txt'),'w')
 for result in test_results:
     results_writer.write(str(result)+'\n')
@@ -206,7 +199,6 @@ for result in test_results:
 results_writer.close()
 
 times_writer = open(os.path.join(path,'time.txt'),'w')
-for time_result in test_times:
-    times_writer.write(str(time_result)+ '\n')
+for i in range(len(test_times)):
+    times_writer.write(str(test_times[i])+ '\n')
 results_writer.close()
-
