@@ -11,15 +11,15 @@ We tested this code on 40 test cases and we got 90% accuracy.
 
 
 Libraries needed:
-import cv2
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy import ndimage
-from scipy.ndimage import label
-import os
-import statistics
-from sklearn.neighbors import KNeighborsClassifier
-import time
+  - import cv2
+  - import numpy as np
+  - import matplotlib.pyplot as plt
+  - from scipy import ndimage
+  - from scipy.ndimage import label
+  - import os
+  - import statistics
+  - from sklearn.neighbors import KNeighborsClassifier
+  - import time
 
 
 How to run the code:
