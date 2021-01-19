@@ -1,5 +1,7 @@
 # Writer-Identification-System
 
+Writer identification system (written in Python) for identifying the writer of a handwritten paragraph image.
+
 acknowledgement: the model was trained using IAM Handwriting Database. 
 
 reference:
