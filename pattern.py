@@ -8,12 +8,11 @@ import statistics
 from sklearn.neighbors import KNeighborsClassifier
 import time
 
-##change this
-path = 'E:\\Writer-Identification-System\\IAMdataset'
+## The path of data
+path = 'D:\\New folder (46)\\data'
 
-def crop_handwritten_region(imgpath):
+def crop_handwritten_region(img):
     
-    img = cv2.imread(imgpath)
     # scale_percent = 60 # percent of original size
     # width = int(img.shape[1] * scale_percent / 100)
     # height = int(img.shape[0] * scale_percent / 100)
@@ -42,8 +41,14 @@ def crop_handwritten_region(imgpath):
                 y_array.append(y)
                 
                 
-    indixes = sorted(range(len(width_array)), key=lambda k: width_array[k])
-    indixes.reverse()
+    if len(y_array)<3:
+        cropped_imagebin = bin_img
+        cropped_imagegray = imgray
+        cropped_image_more = bin_img
+        kernel = np.ones((5, 5), np.uint8)
+        eroded_img = cv2.erode(cropped_imagebin, kernel, iterations=2)
+        return cropped_imagebin, cropped_imagegray,cropped_image_more,eroded_img
+
     three_lines_y=[]
     three_lines_y.append(y_array[0])
     three_lines_y.append(y_array[1])
@@ -156,11 +161,13 @@ def lbp_normalize(lbp_hist):
     lbp_mean = statistics.mean(lbp_hist)
     lbp_hist = lbp_hist / lbp_mean
     return lbp_hist
+
 directory = os.listdir(path)
 
 test_results = [] # holder for results to write after finishing
 test_times = [] # holder for test times to write after finishing
-
+counter = 0
+testpath =""
 for folder in directory:
     training_features = []
     labels = []
@@ -168,43 +175,42 @@ for folder in directory:
     if '.txt' in (path + '\\' +folder + '\\'):
             continue
     start_time = time.time()
-    for file in range(1,4):
-        for img in range(1,3):
-#             print(path + '\\' +folder + '\\' + str(file) + '\\' + str(img) +'.png')    
-#             print(file)
-#             labels.append(file)
-            cropped_imgbin,cropped_imggray, cropped_img_more,cropped_img_erodded = crop_handwritten_region(path + '\\' +folder + '\\' + str(file) + '\\' + str(img) +'.png')
-            for i in split_lines(cropped_img_erodded):
-                lbp_img = lbp_get_result(i)
-                result_hist = lbp_hist(lbp_img)
-                result_normalized = lbp_normalize(result_hist)
-                training_features.append(result_normalized)
-                labels.append(file)
+    counter =0;
+    for file in os.listdir(path + '\\' +folder):
+        counter = counter+1
+        if  counter < 4:
+            print (counter)
+            print(path + '\\' +folder+'\\'+file)
+            for img in os.listdir(path + '\\' +folder+'\\'+file):
+                print(path + '\\' +folder + '\\' + str(file) + '\\' + str(img))    
+                imgg = cv2.imread(os.path.join(path + '\\' +folder+'\\'+file,img))
+                cropped_imgbin,cropped_imggray, cropped_img_more,cropped_img_erodded = crop_handwritten_region(imgg)
+                for i in split_lines(cropped_img_erodded):
+                    lbp_img = lbp_get_result(i)
+                    result_hist = lbp_hist(lbp_img)
+                    result_normalized = lbp_normalize(result_hist)
+                    training_features.append(result_normalized)
+                    labels.append(int(file))
+        else:
+            testpath = path + '\\' +folder+'\\'+file
+            print(testpath)
+            break
     classifier = KNeighborsClassifier(n_neighbors=5)  
-    classifier.fit(training_features, labels) 
+    classifier.fit(training_features, labels)
     
-#     print(path + '\\' +folder + '\\test.png')
-    cropped_imgbin,cropped_imggray, cropped_img_more,cropped_img_erodded = crop_handwritten_region(path + '\\' +folder + '\\test.png')
-       
+    imgg = cv2.imread(testpath)
+    cropped_imgbin,cropped_imggray, cropped_img_more,cropped_img_erodded = crop_handwritten_region(imgg)
     for i in split_lines(cropped_img_erodded):
-#         pred = []
         lbp_img = lbp_get_result(i)
         result_hist = lbp_hist(lbp_img)
         result_normalized = lbp_normalize(result_hist)
-        test_features.append(result_normalized)
-
-#         p = classifier.predict_proba(result_normalized.reshape(1, -1))
-#         p = np.sum(p, axis=0)
-#         r = classifier.classes_[np.argmax(p)]
-#         print(r)
-    
+        test_features.append(result_normalized)    
     
     writer_prediction = classifier.predict(test_features)
     end_time = time.time()
     run_time = round((end_time - start_time),2)
     test_times.append(run_time)
     x = np.array(writer_prediction) 
-#     print("Most frequent value in the above array:") 
     print(np.bincount(x).argmax())
     test_results.append(np.bincount(x).argmax())
 #     print("knn",writer_prediction)
